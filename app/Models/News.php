@@ -18,6 +18,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $category
  * @property Carbon $date
  * @property boolean $main
+ * @property string $tags
+ * @property int $views
+ * @property int $likes
  * @property string $status
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -38,6 +41,9 @@ class News extends Model
         'category',
         'status',
         'main',
+        'tags',
+        'views',
+        'likes',
         'date',
         'created_at',
         'updated_at',

@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('author')->nullable();
             $table->string('category')->nullable();
+            $table->string('tags')->nullable();
+            $table->integer('views')->default(0);
+            $table->integer('likes')->default(0);
             $table->timestamp('date')->nullable();
             $table->timestamps();
         });
