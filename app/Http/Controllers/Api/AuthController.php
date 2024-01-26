@@ -8,6 +8,7 @@ use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
@@ -41,5 +42,11 @@ class AuthController extends Controller
         // Ревокация (аннулирование) токена доступа текущего пользователя
         auth()->user()->token()->revoke();
         return response()->json(['message' => 'Вы успешно вышли из системы']);
+    }
+
+    public function user()
+    {
+        dd(Auth::guard('api'));
+        return response()->json([Auth::guard('api')->user()]);
     }
 }
