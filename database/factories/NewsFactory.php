@@ -20,7 +20,7 @@ class NewsFactory extends Factory
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
             'content' => $this->faker->text,
-            'image' => 'news_images/default.jpg', // Путь к изображению по умолчанию
+            'image' => 'news_images/' . $this->faker->randomElement(['1.jpeg', '2.jpg', '3.jpeg']),
             'author' => $this->faker->name,
             'category' => $this->faker->word,
             'status' => $this->faker->randomElement(['published', 'draft', 'hidden']),

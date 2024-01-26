@@ -40,7 +40,7 @@ class NewsController extends Controller
 
         $news = $query->paginate();
 
-        return response()->json([$news], 200);
+        return response()->json($news, 200);
     }
 
     /**
@@ -116,7 +116,7 @@ class NewsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateNewsRequest $request, News $news)
+    public function update(UpdateNewsRequest $request, News $news): JsonResponse
     {
         $data = $request->validated();
 
