@@ -114,12 +114,16 @@ class NewsController extends Controller
         // Обработка изображения, если оно загружено
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('news_images', 'public');
-            $data['image'] = $imagePath;
+            if (!$imagePath) {
+                return response()->json(['error' => 'Failed to upload image'], 500); // Internal Server Error
+            }
+            $data['image'] = "storage/$imagePath";
         }
 
         $data['tags'] = implode(',', $data['tags']);
 
         $news = News::create($data);
+        $news->image = asset($news->image); // Добавляем путь к изображению для клиента
 
         return response()->json(['data' => $news], 201);
     }
