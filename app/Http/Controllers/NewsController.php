@@ -35,8 +35,15 @@ class NewsController extends Controller
         $filters = $request->only(self::FILTERED_FIELDS);
         $sortBy = $request->input('sort_by', News::DEFAULT_SORT_FIELD);
         $sortOrder = $request->input('sort_order', News::DEFAULT_SORT_DIRECTION);
+        $main = $request->get('main', false);
+
         $limit = $request->input('limit', 10);
         $page = $request->input('page', 1);
+
+        if ($main) {
+            $limit = 4;
+            $page = 1;
+        }
 
         $query = News::query();
 

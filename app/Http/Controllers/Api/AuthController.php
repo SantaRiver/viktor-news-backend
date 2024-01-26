@@ -40,5 +40,4 @@ class AuthController extends Controller
         auth()->user()->token()->revoke();
         return response()->json(['message' => 'Вы успешно вышли из системы']);
     }
-
 }
