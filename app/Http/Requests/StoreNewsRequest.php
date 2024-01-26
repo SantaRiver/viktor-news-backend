@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreNewsRequest extends FormRequest
@@ -17,12 +18,21 @@ class StoreNewsRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            //
+            'title' => 'string|max:255',
+            'description' => 'string',
+            'content' => 'string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'author' => 'string|max:255',
+            'category' => 'string|max:255',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:255',
+            'date' => 'nullable|date',
+            'status' => 'string|in:published,draft,hidden',
         ];
     }
 }
