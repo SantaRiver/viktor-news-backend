@@ -19,7 +19,7 @@ class NewsFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
-            'content' => $this->faker->text,
+            'content' => $this->faker->randomHtml,
             'image' => 'storage/news_images/' . $this->faker->randomElement(['1.jpeg', '2.jpg', '3.jpeg']),
             'author' => $this->faker->name,
             'category' => $this->faker->word,
