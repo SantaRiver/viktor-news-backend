@@ -117,6 +117,8 @@ class NewsController extends Controller
             $data['image'] = $imagePath;
         }
 
+        $data['tags'] = implode(',', $data['tags']);
+
         $news = News::create($data);
 
         return response()->json(['data' => $news], 201);
