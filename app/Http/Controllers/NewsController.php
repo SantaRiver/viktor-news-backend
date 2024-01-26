@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 
@@ -139,10 +140,9 @@ class NewsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateNewsRequest $request, News $news): JsonResponse
+    public function update(Request $request, News $news): JsonResponse
     {
-        $data = $request->validated();
-
+        $data = $request->all();
         // Обработка изображения, если оно загружено
         if ($request->hasFile('image')) {
             // Удаление предыдущего изображения, если оно существует
@@ -155,6 +155,7 @@ class NewsController extends Controller
         }
 
         $news->update($data);
+        $news->image = asset($news->image); // Добавляем путь к изображению для клиента
 
         return response()->json(['data' => $news], 200);
     }
