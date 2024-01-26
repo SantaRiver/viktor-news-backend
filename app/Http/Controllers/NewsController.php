@@ -33,11 +33,16 @@ class NewsController extends Controller
         $filters = $request->only(self::FILTERED_FIELDS);
         $sortBy = $request->input('sort_by', News::DEFAULT_SORT_FIELD);
         $sortOrder = $request->input('sort_order', News::DEFAULT_SORT_DIRECTION);
+        $limit = $request->input('limit', 10);
+        $page = $request->input('page', 1);
 
         $query = News::query();
 
         $this->applyFilters($query, $filters);
         $query->orderBy($sortBy, $sortOrder);
+
+        $query->limit($limit);
+        $query->offset(($page - 1) * $limit);
 
         $newsItems = $query->get()->each(function (News $news) {
             $news->image = asset($news->image);
@@ -46,8 +51,8 @@ class NewsController extends Controller
         $paginator = new LengthAwarePaginator(
             $newsItems,
             $newsItems->count(),
-            $request->get('limit', 10),
-            $request->get('page', 1)
+            $limit,
+            $page
         );
 
 
