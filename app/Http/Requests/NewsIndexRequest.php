@@ -30,6 +30,10 @@ class NewsIndexRequest extends FormRequest
             'status' => 'string',
             'start_date' => 'date',
             'end_date' => 'date',
+            'limit' => 'integer',
+            'page' => 'integer',
+            'sort_by' => 'string',
+            'sort_order' => 'string',
         ];
     }
 }

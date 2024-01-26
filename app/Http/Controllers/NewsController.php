@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
@@ -38,9 +39,19 @@ class NewsController extends Controller
         $this->applyFilters($query, $filters);
         $query->orderBy($sortBy, $sortOrder);
 
-        $news = $query->paginate();
+        $newsItems = $query->get()->each(function (News $news) {
+            $news->image = asset($news->image);
+        });
 
-        return response()->json($news, 200);
+        $paginator = new LengthAwarePaginator(
+            $newsItems,
+            $newsItems->count(),
+            $request->get('limit', 10),
+            $request->get('page', 1)
+        );
+
+
+        return response()->json($paginator, 200);
     }
 
     /**
