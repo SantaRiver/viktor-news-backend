@@ -8,6 +8,7 @@ use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -26,9 +27,10 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
+        Log::debug($request);
         if (auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
             $token = auth()->user()->createToken('MyAppToken')->accessToken;
-            return response()->json(['token' => $token], 200);
+            return response()->json(['token' => $token->token], 200);
         } else {
             return response()->json(['error' => 'Неправильные учетные данные'], 401);
         }
