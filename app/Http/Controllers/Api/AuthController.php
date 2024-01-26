@@ -30,8 +30,8 @@ class AuthController extends Controller
     {
         Log::debug($request);
         if (auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
-            $token = auth()->user()->createToken('MyAppToken')->accessToken;
-            return response()->json(['token' => $token->token], 200);
+            $token = auth()->user()->createToken('MyAppToken')->plainTextToken;
+            return response()->json(['token' => $token], 200);
         } else {
             return response()->json(['error' => 'Неправильные учетные данные'], 401);
         }
