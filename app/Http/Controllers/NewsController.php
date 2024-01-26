@@ -23,6 +23,7 @@ class NewsController extends Controller
         'status',
         'start_date',
         'end_date',
+        'main',
     ];
 
     /**

@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
-            $table->text('content');
+            $table->text('description')->nullable();
+            $table->enum('status', ['published', 'draft', 'hidden'])->default('draft');
+            $table->boolean('main')->default(false);
+            $table->text('content')->nullable();
             $table->string('image')->nullable();
-            $table->string('author');
-            $table->string('category');
-            $table->enum('status', ['published', 'draft', 'hidden']);
+            $table->string('author')->nullable();
+            $table->string('category')->nullable();
+            $table->timestamp('date')->nullable();
             $table->timestamps();
         });
     }

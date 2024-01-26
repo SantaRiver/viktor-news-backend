@@ -34,6 +34,7 @@ class NewsIndexRequest extends FormRequest
             'page' => 'integer',
             'sort_by' => 'string',
             'sort_order' => 'string',
+            'main' => 'boolean',
         ];
     }
 }

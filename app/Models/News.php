@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $image
  * @property string $author
  * @property string $category
+ * @property Carbon $date
+ * @property boolean $main
  * @property string $status
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -35,6 +37,8 @@ class News extends Model
         'author',
         'category',
         'status',
+        'main',
+        'date',
         'created_at',
         'updated_at',
     ];
