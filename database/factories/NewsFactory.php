@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\NewsStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,11 +25,12 @@ class NewsFactory extends Factory
             'author' => $this->faker->name,
             'category' => $this->faker->word,
             'main' => false,
-            'status' => $this->faker->randomElement(['published', 'draft', 'hidden']),
+            'status' => $this->faker->randomElement(NewsStatus::casesArray()),
             'tags' =>  $this->faker->words(3, true),
             'views' => $this->faker->numberBetween(0, 1000),
             'likes' => $this->faker->numberBetween(0, 1000),
-            'date' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'published_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'deleted_at' => null,
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
