@@ -20,7 +20,7 @@ class NewsFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
-            'content' => $this->faker->text(600),
+            'content' => $this->faker->text(5000),
             'image' => $this->faker->imageUrl(rand(2, 5) * 200, rand(2, 5) * 200),
             'author' => $this->faker->name,
             'category' => $this->faker->word,
