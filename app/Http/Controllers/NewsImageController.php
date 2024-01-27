@@ -25,15 +25,15 @@ class NewsImageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreNewsImageRequest $request, News $news)
+    public function store(StoreNewsImageRequest $request, News $news): JsonResponse
     {
         $imagePath = $request->file('image')->store('news_images', 'public');
         if (!$imagePath) {
             return response()->json(['error' => 'Failed to upload image'], 500); // Internal Server Error
         }
-        $news->images()->create(['path' => "storage/$imagePath"]);
+        $image = $news->images()->create(['path' => "storage/$imagePath"]);
 
-        return response()->json(['message' => 'Image uploaded successfully']); // Successful response
+        return response()->json($image); // Successful response
     }
 
     /**
