@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\NewsStatus;
 use App\Http\Requests\NewsIndexRequest;
 use App\Http\Requests\StoreNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 
@@ -47,6 +47,7 @@ class NewsController extends Controller
 
         $query = News::query();
         $query->with('images');
+        $query->where('status', NewsStatus::Published);
 
         $this->applyFilters($query, $filters);
         $query->orderBy($sortBy, $sortOrder);
@@ -114,30 +115,6 @@ class NewsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreNewsRequest $request): JsonResponse
-    {
-        $data = $request->validated();
-
-        // Обработка изображения, если оно загружено
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('news_images', 'public');
-            if (!$imagePath) {
-                return response()->json(['error' => 'Failed to upload image'], 500); // Internal Server Error
-            }
-            $data['image'] = "storage/$imagePath";
-        }
-
-        $data['tags'] = implode(',', $data['tags']);
-
-        $news = News::create($data);
-        $news->image = asset($news->image); // Добавляем путь к изображению для клиента
-
-        return response()->json(['data' => $news], 201);
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(News $news): JsonResponse
@@ -166,6 +143,30 @@ class NewsController extends Controller
         $news->image = asset($news->image); // Добавляем путь к изображению для клиента
 
         return response()->json(['data' => $news], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreNewsRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        // Обработка изображения, если оно загружено
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('news_images', 'public');
+            if (!$imagePath) {
+                return response()->json(['error' => 'Failed to upload image'], 500); // Internal Server Error
+            }
+            $data['image'] = "storage/$imagePath";
+        }
+
+        $data['tags'] = implode(',', $data['tags']);
+
+        $news = News::create($data);
+        $news->image = asset($news->image); // Добавляем путь к изображению для клиента
+
+        return response()->json(['data' => $news], 201);
     }
 
     /**

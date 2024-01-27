@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\NewsStatus;
 use App\Models\News;
 use Illuminate\Database\Seeder;
 
@@ -12,7 +13,10 @@ class NewsSeeder extends Seeder
      */
     public function run(): void
     {
-        News::factory()->count(20)->create();
-        News::query()->inRandomOrder()->limit(4)->update(['main' => true]);
+        News::factory()->count(30)->create();
+        News::query()->where('status', '=', NewsStatus::Published)
+            ->inRandomOrder()
+            ->limit(4)
+            ->update(['main' => true]);
     }
 }
