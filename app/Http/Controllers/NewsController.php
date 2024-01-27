@@ -158,7 +158,7 @@ class NewsController extends Controller
             }
 
             $imagePath = $request->file('image')->store('news_images', 'public');
-            $data['image'] = $imagePath;
+            $data['image'] = "storage/$imagePath";
         }
 
         $news->update($data);
