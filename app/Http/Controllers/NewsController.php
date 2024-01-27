@@ -61,7 +61,7 @@ class NewsController extends Controller
 
         $paginator = new LengthAwarePaginator(
             $newsItems,
-            $newsItems->count(),
+            $query->count(),
             $limit,
             $page
         );
