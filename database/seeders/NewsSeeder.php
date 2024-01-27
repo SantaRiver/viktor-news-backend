@@ -13,5 +13,6 @@ class NewsSeeder extends Seeder
     public function run(): void
     {
         News::factory()->count(20)->create();
+        News::query()->inRandomOrder()->limit(4)->update(['main' => true]);
     }
 }
