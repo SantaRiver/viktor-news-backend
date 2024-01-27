@@ -31,7 +31,7 @@ class NewsImageController extends Controller
         if (!$imagePath) {
             return response()->json(['error' => 'Failed to upload image'], 500); // Internal Server Error
         }
-        $news->images()->create(['path' => $imagePath]);
+        $news->images()->create(['path' => "storage/$imagePath"]);
 
         return response()->json(['message' => 'Image uploaded successfully']); // Successful response
     }
