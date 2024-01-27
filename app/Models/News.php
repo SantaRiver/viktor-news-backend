@@ -6,6 +6,7 @@ use App\Enums\NewsStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -27,6 +28,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $deleted_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ *
+ * @property-read NewsImage[] $images
  */
 class News extends Model
 {
@@ -55,4 +58,9 @@ class News extends Model
     protected $casts = [
         'status' => NewsStatus::class,
     ];
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(NewsImage::class);
+    }
 }
