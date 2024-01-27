@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\NewsImageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::apiResource('/news', NewsController::class);
+Route::apiResource('/news/{news}/images', NewsImageController::class);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/check_token', [AuthController::class, 'checkToken']);

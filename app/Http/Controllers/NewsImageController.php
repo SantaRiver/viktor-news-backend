@@ -4,16 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreNewsImageRequest;
 use App\Http\Requests\UpdateNewsImageRequest;
+use App\Models\News;
 use App\Models\NewsImage;
+use Illuminate\Http\Request;
 
 class NewsImageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(News $news): \Illuminate\Http\JsonResponse
     {
-        //
+        $images = $news->images()->get()->each(function (NewsImage &$image) {
+            $image->path = asset($image->path);
+        });
+        return response()->json($images, 200);
     }
 
     /**

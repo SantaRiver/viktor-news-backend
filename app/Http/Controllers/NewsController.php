@@ -174,6 +174,12 @@ class NewsController extends Controller
         $data['tags'] = implode(',', $data['tags']);
 
         $news = News::create($data);
+        foreach ($imagesPaths as $imagePath) {
+            NewsImage::create([
+                'news_id' => $news->id,
+                'image' => $imagePath,
+            ]);
+        }
 
         $news->image = asset($news->image); // Добавляем путь к изображению для клиента
 
