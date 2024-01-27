@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::apiResource('/news', NewsController::class);
-Route::apiResource('/news/{news}/images', NewsImageController::class);
+Route::apiResource('news.images', NewsImageController::class);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/check_token', [AuthController::class, 'checkToken']);

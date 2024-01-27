@@ -54,7 +54,10 @@ class NewsImageController extends Controller
      */
     public function destroy(News $news, NewsImage $newsImage): JsonResponse
     {
-        Storage::delete($newsImage->path); // Delete the image file from storage (public/news_images/image.jpg)
+        dd($news, $newsImage);
+        if (Storage::exists($newsImage->path)) {
+            Storage::delete($newsImage->path); // Delete the image file from storage (public/news_images/image.jpg)
+        }
         $newsImage->delete();
         return response()->json(['message' => 'Image deleted successfully']);
     }
