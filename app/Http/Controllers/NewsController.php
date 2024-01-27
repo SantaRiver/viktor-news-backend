@@ -120,6 +120,11 @@ class NewsController extends Controller
      */
     public function show(News $news): JsonResponse
     {
+        $images = $news->images;
+        foreach ($images as $image) {
+            $image->path = asset($image->path);
+        }
+        $news->images = $images;
         return response()->json(['data' => $news], 200);
     }
 
