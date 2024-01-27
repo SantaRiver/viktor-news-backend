@@ -1,11 +1,11 @@
 <?php
 
+use App\Enums\NewsStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status', ['published', 'draft', 'hidden'])->default('draft');
+            $table->enum('status', NewsStatus::casesArray())->default('draft');
             $table->boolean('main')->default(false);
             $table->text('content')->nullable();
             $table->string('image')->nullable();
