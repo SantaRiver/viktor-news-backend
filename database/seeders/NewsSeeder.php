@@ -14,7 +14,7 @@ class NewsSeeder extends Seeder
     public function run(): void
     {
         News::factory()->count(30)->create();
-        News::query()->where('status', '=', NewsStatus::Published)
+        News::query()->where('status', '=', NewsStatus::Published->name)
             ->inRandomOrder()
             ->limit(4)
             ->update(['main' => true]);

@@ -47,7 +47,7 @@ class NewsController extends Controller
 
         $query = News::query();
         $query->with('images');
-        $query->where('status', NewsStatus::Published);
+        $query->where('status', NewsStatus::Published->name);
 
         $this->applyFilters($query, $filters);
         $query->orderBy($sortBy, $sortOrder);
