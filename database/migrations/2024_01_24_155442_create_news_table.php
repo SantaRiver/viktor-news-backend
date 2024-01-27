@@ -24,7 +24,8 @@ return new class extends Migration
             $table->string('tags')->nullable();
             $table->integer('views')->default(0);
             $table->integer('likes')->default(0);
-            $table->timestamp('date')->nullable();
+            $table->timestamp('published_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
