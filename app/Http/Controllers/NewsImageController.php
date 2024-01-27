@@ -8,6 +8,7 @@ use App\Models\News;
 use App\Models\NewsImage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class NewsImageController extends Controller
 {
@@ -51,8 +52,9 @@ class NewsImageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(NewsImage $newsImage): JsonResponse
+    public function destroy(News $news, NewsImage $newsImage): JsonResponse
     {
+        Storage::delete($newsImage->path); // Delete the image file from storage (public/news_images/image.jpg)
         $newsImage->delete();
         return response()->json(['message' => 'Image deleted successfully']);
     }
