@@ -46,6 +46,7 @@ class NewsController extends Controller
         }
 
         $query = News::query();
+        $query->with('images');
 
         $this->applyFilters($query, $filters);
         $query->orderBy($sortBy, $sortOrder);
