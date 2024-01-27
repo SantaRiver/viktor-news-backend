@@ -14,6 +14,6 @@ class NewsImageSeeder extends Seeder
      */
     public function run(): void
     {
-        NewsImage::factory()->count(150)->create();
+        NewsImage::factory()->count(400)->create();
     }
 }

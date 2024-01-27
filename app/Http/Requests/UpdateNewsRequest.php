@@ -27,6 +27,8 @@ class UpdateNewsRequest extends FormRequest
             'description' => 'string',
             'content' => 'string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images' => 'nullable|array',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'author' => 'string|max:255',
             'category' => 'string|max:255',
             'status' => 'string|in:published,draft,hidden',

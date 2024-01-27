@@ -7,6 +7,7 @@ use App\Http\Requests\NewsIndexRequest;
 use App\Http\Requests\StoreNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
+use App\Models\NewsImage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -85,10 +86,10 @@ class NewsController extends Controller
             }
             switch ($field) {
                 case 'start_date':
-                    $query->whereDate('created_at', '>=', $value);
+                    $query->whereDate('published_at', '>=', $value);
                     break;
                 case 'end_date':
-                    $query->whereDate('created_at', '<=', $value);
+                    $query->whereDate('published_at', '<=', $value);
                     break;
                 case 'search':
                     $this->applySearchFilter($query, $value);
@@ -161,9 +162,19 @@ class NewsController extends Controller
             $data['image'] = "storage/$imagePath";
         }
 
+        $imagesPaths = [];
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            foreach ($images as $image) {
+                $imagePath = $image->store('news_images', 'public');
+                $imagesPaths[] = "storage/$imagePath";
+            }
+        }
+
         $data['tags'] = implode(',', $data['tags']);
 
         $news = News::create($data);
+
         $news->image = asset($news->image); // Добавляем путь к изображению для клиента
 
         return response()->json(['data' => $news], 201);
