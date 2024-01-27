@@ -147,7 +147,7 @@ class NewsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, News $news): JsonResponse
+    public function update(UpdateNewsRequest $request, News $news): JsonResponse
     {
         $data = $request->all();
         // Обработка изображения, если оно загружено
