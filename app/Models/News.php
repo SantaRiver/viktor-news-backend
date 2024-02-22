@@ -35,7 +35,7 @@ class News extends Model
 {
     use HasFactory, SoftDeletes;
 
-    const DEFAULT_SORT_FIELD = 'updated_at';
+    const DEFAULT_SORT_FIELD = 'id';
     const DEFAULT_SORT_DIRECTION = 'desc';
 
     protected $fillable = [

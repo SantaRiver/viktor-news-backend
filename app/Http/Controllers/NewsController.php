@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\NewsStatus;
+use Illuminate\Http\Request;
 use App\Http\Requests\NewsIndexRequest;
 use App\Http\Requests\StoreNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
 use App\Models\NewsImage;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class NewsController extends Controller
 {
@@ -48,7 +50,7 @@ class NewsController extends Controller
 
         $query = News::query();
         $query->with('images');
-        $query->where('status', NewsStatus::Published->name);
+        //$query->where('status', NewsStatus::Published->name);
 
         $this->applyFilters($query, $filters);
         $query->orderBy($sortBy, $sortOrder);
@@ -66,7 +68,6 @@ class NewsController extends Controller
             $limit,
             $page
         );
-
 
         return response()->json($paginator, 200);
     }
@@ -154,9 +155,29 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreNewsRequest $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
-        $data = $request->validated();
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'string',
+            'description' => 'string',
+            'content' => 'string',
+            'image' => 'image',
+            'images' => 'array',
+            'images.*' => 'image',
+            'published_at' => 'string',
+        ]);
+
+        $errors = $validator->errors();
+        if ($errors) {
+            return response()->json($errors, 500);
+        }
+
+        try {
+            $data = $validator->validated();
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
 
         // Обработка изображения, если оно загружено
         if ($request->hasFile('image')) {
@@ -176,7 +197,7 @@ class NewsController extends Controller
             }
         }
 
-        $data['tags'] = implode(',', $data['tags']);
+        //$data['tags'] = implode(',', $data['tags']);
 
         $news = News::create($data);
         foreach ($imagesPaths as $imagePath) {
