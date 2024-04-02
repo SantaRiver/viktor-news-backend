@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\NewsIndexRequest;
-use App\Http\Requests\StoreNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\News;
 use App\Models\NewsImage;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -60,6 +58,9 @@ class NewsController extends Controller
 
         $newsItems = $query->get()->each(function (News $news) {
             $news->image = asset($news->image);
+            $news->images = $news->images->map(function (NewsImage $image) {
+                return asset($image->path);
+            });
         });
 
         $paginator = new LengthAwarePaginator(
@@ -126,6 +127,7 @@ class NewsController extends Controller
             $image->path = asset($image->path);
         }
         $news->images = $images;
+        $news->image = asset($news->image);
         return response()->json(['data' => $news], 200);
     }
 
@@ -157,59 +159,69 @@ class NewsController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'string',
-            'description' => 'string',
-            'content' => 'string',
-            'image' => 'image',
-            'images' => 'array',
-            'images.*' => 'image',
-            'published_at' => 'string',
-        ]);
-
-        $errors = $validator->errors();
-        if ($errors) {
-            return response()->json($errors, 500);
-        }
-
         try {
-            $data = $validator->validated();
-        } catch (\Exception $exception) {
-            return response()->json($exception->getMessage(), 500);
-        }
-
-        // Обработка изображения, если оно загружено
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('news_images', 'public');
-            if (!$imagePath) {
-                return response()->json(['error' => 'Failed to upload image'], 500); // Internal Server Error
-            }
-            $data['image'] = "storage/$imagePath";
-        }
-
-        $imagesPaths = [];
-        if ($request->hasFile('images')) {
-            $images = $request->file('images');
-            foreach ($images as $image) {
-                $imagePath = $image->store('news_images', 'public');
-                $imagesPaths[] = "storage/$imagePath";
-            }
-        }
-
-        //$data['tags'] = implode(',', $data['tags']);
-
-        $news = News::create($data);
-        foreach ($imagesPaths as $imagePath) {
-            NewsImage::create([
-                'news_id' => $news->id,
-                'image' => $imagePath,
+            $validator = Validator::make($request->all(), [
+                'title' => 'string|nullable',
+                'description' => 'string|nullable',
+                'content' => 'string|nullable',
+                'image' => 'image|nullable',
+                'images' => 'array|nullable',
+                'images.*' => 'image|nullable',
+                'published_at' => 'date|nullable',
+                'tags' => 'string|nullable',
             ]);
+
+            try {
+                $errors = $validator->errors()->all();
+
+                if ($errors) {
+                    return response()->json(['errors' => $errors], 500);
+                }
+                $data = $validator->validated();
+            } catch (\Exception $exception) {
+                return response()->json(['message' => $exception->getMessage()], 500);
+            }
+
+            // Обработка изображения, если оно загружено
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('news_images', 'public');
+                if (!$imagePath) {
+                    return response()->json(['error' => 'Failed to upload image'], 500); // Internal Server Error
+                }
+                $data['image'] = "storage/$imagePath";
+            }
+
+            $imagesPaths = [];
+            if ($request->hasFile('images')) {
+                $images = $request->file('images');
+                foreach ($images as $image) {
+                    try {
+                        $imagePath = $image->store('news_images', 'public');
+                        $imagesPaths[] = "storage/$imagePath";
+                    } catch (\Exception $exception) {
+                        return response()->json(['error' => $exception->getMessage()], 500); // Internal Server Error
+                    }
+                }
+            }
+
+            try {
+                $news = News::create($data);
+                foreach ($imagesPaths as $imagePath) {
+                    NewsImage::create([
+                        'news_id' => $news->id,
+                        'path' => $imagePath,
+                    ]);
+                }
+            } catch (\Exception $exception) {
+                return response()->json(['error' => $exception->getMessage()], 500);
+            }
+
+            //$news->image = asset($news->image); // Добавляем путь к изображению для клиента
+
+            return response()->json(['data' => $news], 201);
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 500); // Internal Server Error
         }
-
-        $news->image = asset($news->image); // Добавляем путь к изображению для клиента
-
-        return response()->json(['data' => $news], 201);
     }
 
     /**
